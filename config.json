@@ -1,0 +1,23 @@
+{
+  "news": {
+    "rss_sources": [
+      {
+        "name": "Google News - OpenAI",
+        "url": "https://news.google.com/rss/search?q=OpenAI+AI&hl=en-US&gl=US&ceid=US:en"
+      },
+      {
+        "name": "Google News - AI model",
+        "url": "https://news.google.com/rss/search?q=AI+model+announcement&hl=en-US&gl=US&ceid=US:en"
+      }
+    ],
+    "crawl_sources": [
+      {
+        "name": "Hacker News",
+        "url": "https://news.ycombinator.com/"
+      }
+    ]
+  },
+  "duplicate_policy": "skip",
+  "request_timeout": 10,
+  "crawl_delay": 1
+}
