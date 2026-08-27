@@ -27,7 +27,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("report", help="통계 리포트와 차트를 생성합니다")
     export_parser = subparsers.add_parser("export", help="정제 뉴스를 파일로 저장합니다")
-    export_parser.add_argument("--format", choices=["csv", "excel"], required=True)
+    export_parser.add_argument("--format", choices=["csv", "excel", "jsonl"], required=True)
     export_parser.add_argument("--status", choices=["summarized"])
     return parser
 
