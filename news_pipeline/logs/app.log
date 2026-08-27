@@ -1,0 +1,57 @@
+[INFO] 뉴스 수집 시작
+[INFO] RSS 뉴스 5건 수집, 신규 저장 5건
+[INFO] 뉴스 정제 완료: 5건
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] OPENAI_API_KEY가 설정되지 않았습니다.
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] AI 요약 실패: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-cody-********************************************YkWY. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+[ERROR] Codyssey API 요청 실패: 400 Client Error:  for url: https://copa.codyssey.kr/v1/chat/completions
+[INFO] 뉴스 정제 완료: 5건, 동일 이슈 연결: 5건
+[INFO] 뉴스 정제 완료: 5건, 동일 이슈 연결: 0건
+[INFO] 뉴스 수집 시작
+[INFO] RSS 뉴스 10건 수집, 신규 저장 6건
+[INFO] 뉴스 수집 시작
+[INFO] CRAWL 뉴스 5건 수집, 신규 저장 5건
+[INFO] 뉴스 정제 완료: 16건, 동일 이슈 연결: 11건
+[INFO] 뉴스 수집 시작
+[INFO] RSS 뉴스 10건 수집, 신규 저장 10건
+[INFO] 뉴스 정제 완료: 26건, 동일 이슈 연결: 10건
+[INFO] 뉴스 수집 시작
+[INFO] RSS 뉴스 10건 수집, 신규 저장 0건
+[INFO] 뉴스 수집 시작
+[INFO] CRAWL 뉴스 5건 수집, 신규 저장 1건
+[INFO] 뉴스 정제 완료: 27건, 동일 이슈 연결: 1건
+[INFO] 뉴스 정제 완료: 27건, 동일 이슈 연결: 0건
+[INFO] 뉴스 수집 시작
+[INFO] RSS 뉴스 10건 수집, 신규 저장 0건
+[INFO] 뉴스 수집 시작
+[INFO] CRAWL 뉴스 5건 수집, 신규 저장 2건
+[INFO] 뉴스 정제 완료: 29건, 동일 이슈 연결: 2건
+[ERROR] Codyssey API 요청 실패 (401): {"error":{"message":"Authentication is required.","type":"authentication_error","code":"authentication_failed"}}
+[ERROR] Codyssey API 요청 실패 (401): {"error":{"message":"Authentication is required.","type":"authentication_error","code":"authentication_failed"}}
+[ERROR] Codyssey API 요청 실패 (401): {"error":{"message":"Authentication is required.","type":"authentication_error","code":"authentication_failed"}}
+[ERROR] Codyssey API 요청 실패 (401): {"error":{"message":"Authentication is required.","type":"authentication_error","code":"authentication_failed"}}
+[ERROR] Codyssey API 요청 실패 (401): {"error":{"message":"Authentication is required.","type":"authentication_error","code":"authentication_failed"}}
+[ERROR] Codyssey API 요청 실패 (401): {"error":{"message":"Authentication is required.","type":"authentication_error","code":"authentication_failed"}}
+[ERROR] API Key에 한글 또는 허용되지 않는 문자가 들어 있습니다. 실제 virtual-key만 입력하세요.
