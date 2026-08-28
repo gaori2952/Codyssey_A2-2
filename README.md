@@ -1,46 +1,64 @@
 # CLI 기반 AI 뉴스 데이터 파이프라인
 
-RSS와 웹 크롤링으로 IT 뉴스를 수집하고, SQLite에 저장한 뒤 정제·분류·AI 요약·분석·리포트·Export까지 수행하는 Python CLI 프로젝트입니다.
+RSS와 웹 크롤링으로 뉴스를 수집하고, SQLite에 저장한 뒤 데이터 정제, AI 요약, 인사이트 분석, 동일 이슈 비교, 시각화, 리포트, Export까지 수행하는 Python CLI 프로젝트입니다.
 
-## 1. 프로젝트 소개
+## 1. 주요 기능
 
-이 프로젝트는 원본 기사와 정제된 기사 데이터를 분리해 보관하면서, 동일 이슈를 비교하고 통합 리포트를 생성하는 흐름을 학습용으로 구성한 뉴스 데이터 파이프라인입니다.
+- **뉴스 수집**: RSS, 웹 크롤링, 복수 뉴스 소스 설정
+- **데이터 정제**: HTML 제거, 공백·날짜 정규화, 제목·URL 검증, 카테고리 분류
+- **AI 뉴스 요약**: 기사 기반 3문장 이내 요약 및 요약 상태 저장
+- **AI 인사이트 분석**: 주요 트렌드, 핵심 키워드, 공통 이슈, 시사점
+- **동일 이슈 비교**: `issue_id` 기반 그룹화 및 소스별 강조점·표현 차이 비교
+- **시각화 및 리포트**: 카테고리·날짜·소스별 차트와 Markdown 리포트
+- **데이터 Export**: CSV, Excel, JSONL
 
-핵심 목표:
+## 2. 팀 역할
 
-- RSS와 웹 크롤링을 모두 활용해 뉴스 수집
-- 원본(raw_news)과 정제(clean_news) 데이터를 분리 보관
-- 중복 기사와 동일 이슈를 구분해 비교 가능하게 구성
-- AI 요약 및 소스별 비교 분석 수행
-- Markdown, 차트, CSV, Excel, JSONL 결과물 생성
+| 팀원 | 역할 |
+|---|---|
+| 이가온 | 팀 공통 PRD 정리 및 프로젝트 구조·기능 통합 |
+| 이승환 | PRD 개선 및 확장 기능 아이디어 제안 |
+| 이태규 | 코드 검토 및 개선 아이디어 제공 |
+| 한민수 | PRD 개선 및 확장 기능 아이디어 제안 |
 
-## 2. 주요 기능
+팀원별 PRD와 개선 의견을 비교하고, 공통 프로젝트에 적용할 수 있는 기능을 중심으로 현재 파이프라인에 반영했습니다.
 
-- fetch: RSS 또는 웹 크롤링으로 뉴스 수집
-- clean: HTML/공백/날짜 정리, 분류, 중복 처리
-- summarize: AI 요약 생성
-- analyze: 트렌드 분석, 특정 카테고리/기간/이슈 분석
-- report: 통계 리포트와 차트 생성
-- export: CSV, Excel, JSONL 파일 내보내기
-
-## 3. 데이터 파이프라인 흐름
+## 3. 데이터 파이프라인
 
 ```text
-fetch -> raw_news -> clean -> clean_news -> summarize -> analyze -> report -> export
+RSS / Crawl
+	↓
+   fetch
+	↓
+  raw_news
+	↓
+    clean
+	↓
+ clean_news
+	↓
+동일 이슈 그룹화
+	↓
+ summarize
+	↓
+analyze / compare
+	↓
+report / export
 ```
 
-핵심 원칙:
+권장 실행 순서:
 
-- 원본 데이터는 유지하고 정제 데이터를 별도로 저장
-- 같은 URL은 중복으로 처리하고, 다른 URL의 유사 기사는 issue_id로 연결
-- 정제 과정에서 날짜, 제목, URL, 카테고리를 표준화
-- AI 분석은 사실 중심으로 제한하고 구조화된 JSON 형식으로 추출
+```text
+fetch → clean → summarize → analyze → report → export
+```
 
-## 4. 전체 프로젝트 구조
+`analyze`는 요약 완료 뉴스(`summary_status = summarized`)를 대상으로 하므로, AI 분석 전에 `clean`과 `summarize`를 실행해야 합니다.
+
+## 4. 프로젝트 구조
 
 ```text
 news_pipeline/
 ├── main.py
+├── verify_jsonl_export.py
 ├── config.json
 ├── requirements.txt
 ├── README.md
@@ -78,13 +96,14 @@ news_pipeline/
 └── .venv/
 ```
 
-## 5. 설치 및 실행 방법
+## 5. 설치 및 설정
 
-### 5.1 가상환경 생성 및 의존성 설치
+### 5.1 가상환경 및 의존성 설치
 
 ```powershell
 cd C:\Users\Kaon\Desktop\news_pipeline
-.\.venv\Scripts\Activate.ps1
+py -m venv .venv
+\.venv\Scripts\Activate.ps1
 py -m pip install -r requirements.txt
 ```
 
@@ -102,102 +121,94 @@ $env:CODYSSEY_API_KEY = "여기에_복사한_virtual-key"
 
 Codyssey API를 사용할 때는 CODYSSEY_API_KEY 또는 OPENAI_API_KEY 환경변수를 사용합니다.
 
-## 6. CLI 명령어
+## 6. 실행 방법
 
 ```powershell
-py main.py fetch --source rss --limit 10
-py main.py fetch --source crawl --limit 10
-py main.py clean
-py main.py summarize --unsummarized --limit 10
-py main.py summarize --all
-py main.py summarize --id 3
-py main.py analyze
-py main.py analyze --category AI
-py main.py analyze --date-from 2026-08-01 --date-to 2026-08-31
-py main.py analyze --issue 3
-py main.py analyze --compare
-py main.py report
-py main.py export --format csv
-py main.py export --format excel
-py main.py export --format jsonl
-py main.py export --format csv --status summarized
+.\.venv\Scripts\python.exe main.py fetch --source rss --limit 10
+.\.venv\Scripts\python.exe main.py fetch --source crawl --limit 10
+.\.venv\Scripts\python.exe main.py clean
+.\.venv\Scripts\python.exe main.py summarize --unsummarized --limit 10
+.\.venv\Scripts\python.exe main.py summarize --all
+.\.venv\Scripts\python.exe main.py summarize --id 3
+.\.venv\Scripts\python.exe main.py analyze
+.\.venv\Scripts\python.exe main.py analyze --category AI
+.\.venv\Scripts\python.exe main.py analyze --date-from 2026-08-01 --date-to 2026-08-31
+.\.venv\Scripts\python.exe main.py analyze --issue 3
+.\.venv\Scripts\python.exe main.py analyze --compare
+.\.venv\Scripts\python.exe main.py report
+.\.venv\Scripts\python.exe main.py export --format csv
+.\.venv\Scripts\python.exe main.py export --format excel
+.\.venv\Scripts\python.exe main.py export --format jsonl
+.\.venv\Scripts\python.exe main.py export --format csv --status summarized
 ```
 
 ## 7. 핵심 설계
 
-### raw/clean 데이터 분리
+### 7.1 Raw / Clean 데이터 분리
 
-- raw_news: 수집 직후 원본 데이터 저장
-- clean_news: HTML 제거, 공백 정리, 날짜 정규화, 카테고리 분류 이후 결과 저장
+- `raw_news`: 수집 직후 원본 기사 저장
+- `clean_news`: 정제, 분류, 요약, 이슈 연결 결과 저장
+- `analyses`: AI 트렌드 분석과 동일 이슈 비교 결과 저장
 
-이 구조는 다음 이유에서 중요합니다.
+원본과 처리 결과를 분리해 재정제와 재분석이 가능하도록 구성했습니다. URL 중복은 `duplicate_policy`에 따라 `skip` 또는 `upsert`로 처리하고, 다른 URL의 유사 뉴스는 `issue_id`로 연결합니다.
 
-- 원본 데이터를 보존해 재정제, 재분석 가능
-- 정제 규칙을 바꿔도 기존 데이터 유지
-- 동일 이슈 비교와 출처별 분석을 분리해서 수행 가능
+### 7.2 데이터 정제 및 카테고리
 
-### 정제 규칙
+`services/cleaner.py`에서 제목·URL 검증, HTML·공백 제거, 날짜 정규화, 결측값 처리, 키워드 기반 분류를 수행합니다. 카테고리는 AI, 반도체, 클라우드, 보안, 소프트웨어, 기타입니다.
 
-clean 단계는 다음을 수행합니다.
+### 7.3 RSS와 Crawl
 
-- HTML 태그 제거
-- 연속 공백 정리
-- URL/제목/날짜 검증
-- 타임존 포함 날짜를 ISO 날짜 형식으로 표준화
-- 키워드 기반으로 AI, 반도체, 클라우드, 보안, 소프트웨어, 기타로 분류
+RSS는 구조화된 메타데이터를 빠르게 수집하고, Crawl은 웹 페이지의 본문과 날짜를 보완합니다. Crawl은 User-Agent, timeout, 요청 간 delay를 적용하며 본문 추출 실패 시 제목을 fallback으로 사용합니다.
 
-### RSS와 Crawl
+### 7.4 AI 프롬프트
 
-RSS와 Crawl은 각각 장단점이 있습니다.
+요약은 핵심 내용 3문장 이내, 사실 중심, 추측 금지를 원칙으로 합니다. 인사이트 분석은 `trend`, `keywords`, `issues`, `implications` 구조를 사용하고, 동일 이슈 비교는 `common_facts`, `source_emphasis`, `expression_differences`, `keyword_differences`, `perspective_implications` 구조를 사용합니다.
 
-- RSS: 빠르고 구조화된 메타데이터가 많음. 다만 본문 부족 가능성
-- Crawl: 실제 본문 확보 가능. 다만 사이트 구조 변화에 취약
+## 8. 시각화 및 결과물
 
-### 중복 정책: skip/upsert
-
-config.json의 duplicate_policy는 다음 둘 중 하나를 선택합니다.
-
-- skip: 같은 URL이 있으면 추가하지 않음
-- upsert: 같은 URL이 있으면 최신 데이터로 갱신
-
-### 실행 순서와 의존성
+`report` 명령으로 다음 결과물을 생성합니다.
 
 ```text
-fetch -> raw_news -> clean -> clean_news -> summarize -> analyze -> report -> export
+data/news.db
+logs/app.log
+outputs/charts/category_count.png
+outputs/charts/daily_news_count.png
+outputs/charts/source_count.png
+outputs/reports/report.md
+outputs/exports/news.csv
+outputs/exports/news.xlsx
+outputs/exports/news.jsonl
 ```
 
-권장 실행 순서:
+리포트에는 Raw/Clean 뉴스 수, 요약 완료율, 필수·날짜 필드 완성률, 소스·카테고리 통계, 이슈 수, AI 분석, 동일 이슈 비교 결과가 포함됩니다.
 
-1. fetch
-2. clean
-3. summarize
-4. analyze
-5. report
-6. export
+한글 차트는 설치된 폰트 중 `Malgun Gothic`, `AppleGothic`, `Apple SD Gothic Neo`, `NanumGothic`, `NanumBarunGothic`, `Noto Sans CJK KR`, `Noto Sans KR` 순서로 fallback을 적용합니다.
 
-## 8. 결과물
+## 9. 문서 및 평가
 
-프로젝트는 다음 결과물을 생성합니다.
+- [docs/PRD.md](docs/PRD.md): 프로젝트 기능 요구사항과 데이터 파이프라인 설계
+- [docs/EVALUATION.md](docs/EVALUATION.md): 프롬프트 설계, 실험 계획, RSS/Crawl 불일치 검증, AI 비용 최적화
 
-- SQLite DB: data/news.db
-- 로그: logs/app.log
-- 리포트: outputs/reports/report.md
-- 차트: outputs/charts/category_count.png, outputs/charts/daily_news_count.png
-- export 파일: outputs/exports/news.csv, news.xlsx, news.jsonl
+## 10. 검증 및 오류 처리
 
-## 9. 상세 문서
+주요 진행 상황과 오류는 콘솔 및 `logs/app.log`에 기록합니다. 네트워크 오류나 AI 호출 실패가 발생해도 해당 작업을 안전하게 종료하며, API Key가 없으면 AI 요청을 수행하지 않습니다.
 
-- [docs/PRD.md](docs/PRD.md): 초기 제품 요구사항 문서
-- [docs/EVALUATION.md](docs/EVALUATION.md): 프롬프트 설계와 평가 실험 정리
+JSONL Export를 비파괴 방식으로 확인하려면 다음을 실행합니다.
 
-## 10. 오류 처리와 로그
+```powershell
+.\.venv\Scripts\python.exe verify_jsonl_export.py
+```
 
-주요 진행 상황과 오류는 콘솔 및 logs/app.log에 [INFO], [WARNING], [ERROR] 형식으로 기록합니다.
+API Key, 데이터베이스 원본, 로그에는 민감정보가 포함될 수 있으므로 GitHub에 업로드하지 않습니다.
 
-- 네트워크 오류는 해당 수집 실행에 안내
-- AI 호출 실패는 해당 기사만 건너뜀
-- summarize/analyze는 API Key가 없으면 로그를 남기고 종료
+## 11. 기술 스택
 
-## 11. 참고
-
-이 프로젝트는 기존 기능을 유지하면서, 수집·정제·AI 분석·리포트·Export 구조를 학습용으로 이해하기 쉽게 구성한 CLI 파이프라인입니다.
+- Python 3.10+
+- argparse
+- SQLite
+- feedparser
+- requests / BeautifulSoup
+- pandas / openpyxl
+- matplotlib
+- Codyssey API
+- Git / GitHub
