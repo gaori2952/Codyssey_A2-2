@@ -68,43 +68,43 @@ fetch → clean → summarize → analyze → report → export
 
 ```text
 news_pipeline/
-├── main.py
-├── verify_jsonl_export.py
-├── config.json
-├── requirements.txt
-├── README.md
-├── .gitignore
+├── main.py                         # CLI 엔트리포인트와 서브커맨드 실행
+├── verify_jsonl_export.py           # JSONL Export 결과 검증
+├── config.json                     # 뉴스 소스와 수집·중복 처리 설정
+├── requirements.txt                # Python 패키지 의존성
+├── README.md                       # 프로젝트 사용법과 구조 문서
+├── .gitignore                      # Git에서 제외할 파일 설정
 ├── collectors/
 │   ├── __init__.py
-│   ├── rss_collector.py
-│   └── crawler.py
+│   ├── rss_collector.py             # feedparser 기반 RSS 수집
+│   └── crawler.py                   # requests·BeautifulSoup 기반 웹 수집
 ├── services/
 │   ├── __init__.py
-│   ├── cleaner.py
-│   ├── ai_service.py
-│   ├── analyzer.py
-│   ├── comparator.py
-│   ├── issue_grouper.py
-│   ├── reporter.py
-│   └── exporter.py
+│   ├── cleaner.py                   # 텍스트·날짜 정제와 카테고리 분류
+│   ├── ai_service.py                # AI 요약·분석·비교 API 요청
+│   ├── analyzer.py                  # 조건별 AI 분석과 결과 저장
+│   ├── comparator.py                # 동일 이슈 비교와 결과 파일 저장
+│   ├── issue_grouper.py             # 유사 뉴스의 issue_id 그룹화
+│   ├── reporter.py                  # 통계 리포트와 차트 생성
+│   └── exporter.py                  # CSV·Excel·JSONL Export
 ├── database/
 │   ├── __init__.py
-│   └── db.py
+│   └── db.py                        # SQLite 초기화·저장·조회·마이그레이션
 ├── utils/
 │   ├── __init__.py
-│   └── logger.py
+│   └── logger.py                    # 콘솔 및 파일 로그 설정
 ├── docs/
-│   ├── PRD.md
-│   └── EVALUATION.md
+│   ├── PRD.md                       # 제품 요구사항과 데이터 모델
+│   └── EVALUATION.md                # 프롬프트·수집·비용 평가 문서
 ├── data/
-│   └── .gitkeep
+│   └── .gitkeep                     # SQLite DB 저장 폴더 유지용 파일
 ├── logs/
-│   └── .gitkeep
+│   └── .gitkeep                     # 로그 저장 폴더 유지용 파일
 ├── outputs/
-│   ├── charts/
-│   ├── reports/
-│   └── exports/
-└── .venv/                 # 로컬에서 생성하는 가상환경
+│   ├── charts/                      # 생성된 PNG 차트
+│   ├── reports/                     # 생성된 Markdown·비교 리포트
+│   └── exports/                     # 생성된 CSV·Excel·JSONL 파일
+└── .venv/                           # 로컬에서 생성하는 가상환경
 ```
 
 ## 5. 설치 및 설정
