@@ -104,8 +104,20 @@ def unified_comparison_table(comparison_data, sources: list[str], common_text: s
 
 
 def _setup_font() -> None:
-    if any("Malgun Gothic" in font.name for font in font_manager.fontManager.ttflist):
-        plt.rcParams["font.family"] = "Malgun Gothic"
+    candidates = [
+        "Malgun Gothic",
+        "AppleGothic",
+        "Apple SD Gothic Neo",
+        "NanumGothic",
+        "NanumBarunGothic",
+        "Noto Sans CJK KR",
+        "Noto Sans KR",
+    ]
+    available = {font.name for font in font_manager.fontManager.ttflist}
+    for name in candidates:
+        if name in available:
+            plt.rcParams["font.family"] = name
+            break
     plt.rcParams["axes.unicode_minus"] = False
 
 
@@ -162,6 +174,7 @@ def create_report() -> None:
         raw_count = connection.execute("SELECT COUNT(*) FROM raw_news").fetchone()[0]
         clean_count = connection.execute("SELECT COUNT(*) FROM clean_news").fetchone()[0]
         summarized = connection.execute("SELECT COUNT(*) FROM clean_news WHERE summary_status = 'summarized'").fetchone()[0]
+        required = connection.execute("SELECT COUNT(*) FROM clean_news WHERE title <> '' AND url <> ''").fetchone()[0]
         dated = connection.execute("SELECT COUNT(*) FROM clean_news WHERE published_at <> ''").fetchone()[0]
         source_count = connection.execute("SELECT COUNT(DISTINCT source) FROM clean_news").fetchone()[0]
         issue_count = connection.execute("SELECT COUNT(*) FROM issues").fetchone()[0]
@@ -181,6 +194,7 @@ def create_report() -> None:
     _save_line_chart(daily, "outputs/charts/daily_news_count.png")
     _save_bar_chart(source_summary(sources), "뉴스 소스별 기사 수", "outputs/charts/source_count.png", "#457b9d")
     completion = summarized / clean_count * 100 if clean_count else 0
+    required_completion = required / clean_count * 100 if clean_count else 0
     completeness = dated / clean_count * 100 if clean_count else 0
     lines = [
         "# 뉴스 파이프라인 리포트", "",
@@ -189,6 +203,7 @@ def create_report() -> None:
         "| 지표 | 결과 |", "|---|---:|",
         f"| Raw 뉴스 | {raw_count}건 |", f"| Clean 뉴스 | {clean_count}건 |",
         f"| 요약 완료 | {summarized}건 |", f"| 요약 완료율 | {completion:.1f}% |",
+        f"| 필수 필드 완성률 | {required_completion:.1f}% |",
         f"| 날짜 필드 완성률 | {completeness:.1f}% |", f"| 뉴스 소스 | {source_count}개 |",
         f"| 생성된 이슈 | {issue_count}개 |", f"| 비교 가능한 이슈 | {comparable_count}개 |", "",
         "## 시각화", "",
