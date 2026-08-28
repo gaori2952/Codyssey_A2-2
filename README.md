@@ -93,7 +93,7 @@ news_pipeline/
 │   ├── charts/
 │   ├── reports/
 │   └── exports/
-└── .venv/
+└── .venv/                 # 로컬에서 생성하는 가상환경
 ```
 
 ## 5. 설치 및 설정
@@ -123,24 +123,65 @@ Codyssey API를 사용할 때는 CODYSSEY_API_KEY 또는 OPENAI_API_KEY 환경�
 
 ## 6. 실행 방법
 
+모든 명령은 프로젝트 가상환경의 Python으로 실행하는 것을 권장합니다.
+
+### 6.1 뉴스 수집
+
 ```powershell
 .\.venv\Scripts\python.exe main.py fetch --source rss --limit 10
 .\.venv\Scripts\python.exe main.py fetch --source crawl --limit 10
+```
+
+RSS와 Crawl은 `config.json`에 등록된 여러 소스를 순서대로 처리합니다. 수집 데이터는 URL을 기준으로 중복 처리한 뒤 `raw_news`에 저장합니다.
+
+### 6.2 데이터 정제
+
+```powershell
 .\.venv\Scripts\python.exe main.py clean
+```
+
+`clean`은 제목·URL 검증, HTML 및 연속 공백 제거, 날짜 정규화, 카테고리 분류, `clean_news` 저장, 동일 이슈 그룹화를 수행합니다. 정제에 실패한 행은 건너뛰며 `raw_news`는 삭제하지 않습니다.
+
+### 6.3 AI 뉴스 요약
+
+```powershell
 .\.venv\Scripts\python.exe main.py summarize --unsummarized --limit 10
 .\.venv\Scripts\python.exe main.py summarize --all
 .\.venv\Scripts\python.exe main.py summarize --id 3
+```
+
+`--unsummarized`는 `summary_status = 'unsummarized'`인 뉴스만 대상으로 하고, 성공한 결과는 `clean_news.summary`와 `summary_status = 'summarized'`로 저장합니다. API 오류가 발생한 기사는 건너뛰고 로그를 남깁니다.
+
+### 6.4 AI 인사이트 분석
+
+```powershell
 .\.venv\Scripts\python.exe main.py analyze
 .\.venv\Scripts\python.exe main.py analyze --category AI
 .\.venv\Scripts\python.exe main.py analyze --date-from 2026-08-01 --date-to 2026-08-31
+```
+
+분석 대상은 요약 완료 뉴스이며, 결과의 `trend`, `keywords`, `issues`, `implications`를 `analyses`에 저장하고 콘솔에 출력합니다.
+
+### 6.5 동일 이슈 뉴스 비교
+
+```powershell
 .\.venv\Scripts\python.exe main.py analyze --issue 3
 .\.venv\Scripts\python.exe main.py analyze --compare
+```
+
+서로 다른 소스의 기사가 2개 이상 연결된 이슈만 비교합니다. 결과는 콘솔, `analyses`, `outputs/reports/comparison_issue_<id>.md`, `outputs/reports/comparison_issue_<id>.txt`에 저장합니다.
+
+### 6.6 리포트 및 Export
+
+```powershell
 .\.venv\Scripts\python.exe main.py report
 .\.venv\Scripts\python.exe main.py export --format csv
 .\.venv\Scripts\python.exe main.py export --format excel
 .\.venv\Scripts\python.exe main.py export --format jsonl
 .\.venv\Scripts\python.exe main.py export --format csv --status summarized
 ```
+
+`report`는 리포트와 PNG 차트를 생성하고, CSV·Excel·JSONL은 각각 `export` 명령으로 생성합니다.
 
 ## 7. 핵심 설계
 
@@ -166,19 +207,24 @@ RSS는 구조화된 메타데이터를 빠르게 수집하고, Crawl은 웹 페�
 
 ## 8. 시각화 및 결과물
 
-`report` 명령으로 다음 결과물을 생성합니다.
+`report` 명령은 다음 리포트와 차트를 생성합니다.
 
 ```text
-data/news.db
-logs/app.log
 outputs/charts/category_count.png
 outputs/charts/daily_news_count.png
 outputs/charts/source_count.png
 outputs/reports/report.md
+```
+
+`export` 명령은 다음 파일을 생성합니다.
+
+```text
 outputs/exports/news.csv
 outputs/exports/news.xlsx
 outputs/exports/news.jsonl
 ```
+
+`data/news.db`는 CLI 실행 중 사용하는 SQLite 데이터베이스이고, `logs/app.log`는 실행 로그 파일입니다.
 
 리포트에는 Raw/Clean 뉴스 수, 요약 완료율, 필수·날짜 필드 완성률, 소스·카테고리 통계, 이슈 수, AI 분석, 동일 이슈 비교 결과가 포함됩니다.
 
@@ -191,7 +237,7 @@ outputs/exports/news.jsonl
 
 ## 10. 검증 및 오류 처리
 
-주요 진행 상황과 오류는 콘솔 및 `logs/app.log`에 기록합니다. 네트워크 오류나 AI 호출 실패가 발생해도 해당 작업을 안전하게 종료하며, API Key가 없으면 AI 요청을 수행하지 않습니다.
+주요 진행 상황과 오류는 콘솔 및 `logs/app.log`에 기록합니다. RSS/Crawl 수집과 AI 호출은 실패 시 오류를 기록하고 해당 작업을 종료하며, 요약 처리에서는 실패한 기사 다음 작업을 계속합니다. API Key가 없으면 AI 요청을 수행하지 않습니다.
 
 JSONL Export를 비파괴 방식으로 확인하려면 다음을 실행합니다.
 
