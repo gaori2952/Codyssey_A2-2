@@ -15,7 +15,8 @@
         "name": "Hacker News",
         "url": "https://news.ycombinator.com/"
       }
-    ]
+    ],
+    "api_sources": []
   },
   "duplicate_policy": "skip",
   "request_timeout": 10,
