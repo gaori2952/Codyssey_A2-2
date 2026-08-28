@@ -53,6 +53,7 @@
 ```text
 py main.py fetch --source rss --limit 10
 py main.py fetch --source crawl --limit 10
+py main.py fetch --source api --limit 10
 py main.py clean
 py main.py summarize --unsummarized --limit 10
 py main.py summarize --all
@@ -73,6 +74,7 @@ py main.py export --format csv --status summarized
 
 - RSS 수집은 `feedparser`를 사용한다.
 - 웹 수집은 `requests`와 `BeautifulSoup`를 사용한다.
+- API 수집은 `requests`를 사용하며 `config.json`의 `api_sources`에 등록한 REST API를 선택적으로 호출한다.
 - 제목, 본문 또는 요약, URL, 게시일, 실제 소스명, 수집 방식, 수집 시각을 저장한다.
 - 크롤링에는 timeout, User-Agent, 요청 지연, HTTP 오류 처리를 적용한다.
 - URL과 주요 수집 설정은 `config.json`에서 관리한다.

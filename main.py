@@ -8,7 +8,7 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     fetch_parser = subparsers.add_parser("fetch", help="RSS 또는 웹에서 뉴스를 수집합니다")
-    fetch_parser.add_argument("--source", choices=["rss", "crawl"], required=True)
+    fetch_parser.add_argument("--source", choices=["rss", "crawl", "api"], required=True)
     fetch_parser.add_argument("--limit", type=int, default=10)
 
     subparsers.add_parser("clean", help="원본 뉴스를 정제합니다")
@@ -53,12 +53,20 @@ def main() -> None:
                 for source in sources:
                     if source.get("url"):
                         items.extend(collect_rss(source["url"], args.limit, source["name"]))
-            else:
+            elif args.source == "crawl":
                 sources = news_config.get("crawl_sources", [{"name": "Web crawl", "url": news_config.get("crawl_url")}])
                 items = []
                 for source in sources:
                     if source.get("url"):
                         items.extend(collect_crawl(source["url"], args.limit, config.get("request_timeout", 10), config.get("crawl_delay", 1), source["name"]))
+            else:
+                from collectors.api_collector import collect_api
+
+                sources = news_config.get("api_sources", [])
+                items = []
+                for source in sources:
+                    if source.get("url"):
+                        items.extend(collect_api(source["url"], args.limit, config.get("request_timeout", 10), source.get("name", "API"), source.get("headers"), source.get("items_path", ""), source.get("field_map")))
             saved = save_raw_news(items)
             logger.info("%s 뉴스 %d건 수집, 신규 저장 %d건", args.source.upper(), len(items), saved)
         except Exception as error:

@@ -15,7 +15,7 @@
 
 ## 1. 주요 기능
 
-- **뉴스 수집**: RSS, 웹 크롤링, 복수 뉴스 소스 설정
+- **뉴스 수집**: RSS, 웹 크롤링, REST API, 복수 뉴스 소스 설정
 - **데이터 정제**: HTML 제거, 공백·날짜 정규화, 제목·URL 검증, 카테고리 분류
 - **AI 뉴스 요약**: 기사 기반 3문장 이내 요약 및 요약 상태 저장
 - **AI 인사이트 분석**: 주요 트렌드, 핵심 키워드, 공통 이슈, 시사점
@@ -74,9 +74,10 @@ news_pipeline/
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
-├── collectors/                     # RSS와 웹 크롤링 수집 모듈
+├── collectors/                     # RSS·웹·REST API 수집 모듈
 │   ├── __init__.py
 │   ├── rss_collector.py
+│   ├── api_collector.py
 │   └── crawler.py
 ├── services/                       # 정제, AI, 이슈 비교, 리포트, Export 모듈
 │   ├── __init__.py
@@ -143,7 +144,29 @@ Codyssey API를 사용할 때는 CODYSSEY_API_KEY 또는 OPENAI_API_KEY 환경�
 .\.venv\Scripts\python.exe main.py fetch --source crawl --limit 10
 ```
 
-RSS와 Crawl은 `config.json`에 등록된 여러 소스를 순서대로 처리합니다. 수집 데이터는 URL을 기준으로 중복 처리한 뒤 `raw_news`에 저장합니다.
+REST API 소스도 `config.json`에 등록하면 선택적으로 수집할 수 있습니다.
+
+```powershell
+.\.venv\Scripts\python.exe main.py fetch --source api --limit 10
+```
+
+RSS, Crawl, API는 `config.json`에 등록된 여러 소스를 순서대로 처리합니다. 수집 데이터는 URL을 기준으로 중복 처리한 뒤 `raw_news`에 저장합니다.
+
+API 소스 설정 예시는 다음과 같습니다.
+
+```json
+{
+	"name": "Example API",
+	"url": "https://example.com/api/news",
+	"items_path": "items",
+	"field_map": {
+		"title": "title",
+		"content": "description",
+		"url": "url",
+		"published_at": "published_at"
+	}
+}
+```
 
 ### 6.2 데이터 정제
 
