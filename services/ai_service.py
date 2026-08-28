@@ -83,7 +83,7 @@ def compare_news(items: list[dict]) -> dict | None:
         f"뉴스 소스: {item.get('source', '')}\n제목: {item.get('title', '')}\n요약: {item.get('summary', '')}\n게시 날짜: {item.get('published_at', '')}"
         for item in items
     )
-    instruction = """동일 이슈를 다룬 뉴스 기사들을 다음 5개 축으로 비교 분석해 JSON 객체로 답하세요. 키는 common_facts, source_emphasis, expression_differences, keyword_differences, perspective_implications입니다. 모든 분석 내용은 반드시 자연스러운 한국어로 작성하세요. 소스명과 고유명사, 필요한 원문 키워드는 그대로 두어도 됩니다. 각 값은 짧은 문장이나 항목 목록으로 작성하세요. 기사에 없는 내용을 추측하지 말고, 어느 소스가 옳거나 틀린지 판단하지 마세요."""
+    instruction = """동일 이슈를 다룬 뉴스 기사들을 다음 5개 축으로 비교 분석해 JSON 객체로 답하세요. 키는 common_facts, source_emphasis, expression_differences, keyword_differences, perspective_implications입니다. 모든 분석 내용은 반드시 자연스러운 한국어로 작성하세요. 소스명과 고유명사, 필요한 원문 키워드는 그대로 두어도 됩니다. 각 값은 짧은 문장이나 항목 목록으로 작성하세요. source_emphasis, expression_differences, keyword_differences, perspective_implications의 값은 표의 열 제목에 소스명이 표시되므로 항목 앞에 'CNBC:', 'Politico:', 'CNBC 제목은' 같은 소스명 접두사를 반복하지 마세요. 기사에 없는 내용을 추측하지 말고, 어느 소스가 옳거나 틀린지 판단하지 마세요."""
     result = _request_chat([
         {"role": "system", "content": instruction},
         {"role": "user", "content": articles},

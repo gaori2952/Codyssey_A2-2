@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+import re
 
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
@@ -53,7 +54,8 @@ def source_summary(rows, maximum: int = 5):
 
 def comparison_cell(value, source: str, axis: str) -> str:
     def clean_label(text: str) -> str:
-        return text.replace(f"{source} 주요 키워드:", "", 1).replace(f"{source}:", "", 1).replace(f"{source}는 ", "", 1).replace(f"{source}의 ", "", 1).strip(" -")
+        prefix = rf"^{re.escape(source)}(?:\s+(?:주요\s*키워드|주요어|제목))?(?:은|는|의|이|가)?\s*:?\s*"
+        return re.sub(prefix, "", text.strip(" -"), count=1).strip(" -")
 
     if isinstance(value, dict):
         if source in value:
@@ -183,7 +185,19 @@ def create_report() -> None:
         sources = connection.execute("SELECT source, COUNT(*) count FROM clean_news GROUP BY source ORDER BY count DESC").fetchall()
         daily = connection.execute("SELECT published_at, COUNT(*) count FROM clean_news WHERE published_at <> '' GROUP BY published_at ORDER BY published_at").fetchall()
         analysis = connection.execute("SELECT * FROM analyses WHERE analysis_type = 'trend' OR analysis_type IS NULL ORDER BY id DESC LIMIT 1").fetchone()
-        comparison = connection.execute("SELECT a.*, i.issue_title FROM analyses a LEFT JOIN issues i ON i.id = a.issue_id WHERE a.analysis_type = 'comparison' ORDER BY a.id DESC LIMIT 1").fetchone()
+        comparison = connection.execute(
+            """SELECT a.*, i.issue_title
+            FROM analyses a
+            LEFT JOIN issues i ON i.id = a.issue_id
+            WHERE a.analysis_type = 'comparison'
+              AND EXISTS (
+                  SELECT 1 FROM clean_news c
+                  WHERE c.issue_id = a.issue_id
+                  GROUP BY c.issue_id
+                  HAVING COUNT(DISTINCT c.source) >= 2
+              )
+            ORDER BY a.id DESC LIMIT 1"""
+        ).fetchone()
         comparison_sources = []
         comparison_items = []
         if comparison:

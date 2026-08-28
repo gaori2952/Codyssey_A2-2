@@ -90,7 +90,7 @@ def save_comparison_files(issue_id: int, items: list[dict], result: dict) -> Non
     markdown += [f"- {source}" for source in sources]
     text = [f"동일 이슈 뉴스 비교: {title}", "", "참여 뉴스 소스", ", ".join(sources)]
     markdown += ["", "## 공통 사실", "", "- 기사 주제와 보도 시점은 양쪽 기사에서 공통으로 확인되는 내용입니다.", "", "## 한눈에 보는 소스별 비교", "", f"| 비교축 | {sources[0]} | {sources[1] if len(sources) > 1 else '소스 B'} |", "|---|---|---|"]
-    for axis, label in COMPARISON_AXES:
+    for number, (axis, label) in enumerate(COMPARISON_AXES, 1):
         if axis == "common_facts":
             continue
         value = axis_value(result, axis)
