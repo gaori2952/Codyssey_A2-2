@@ -42,7 +42,7 @@
 4. 프로그램은 제목과 본문 키워드로 카테고리를 분류하고 `clean_news`에 저장한다.
 5. 사용자는 API Key를 환경변수로 설정한 뒤 미요약 뉴스를 요약한다.
 6. 사용자는 전체 트렌드 또는 특정 이슈의 소스별 비교 분석을 실행한다.
-7. 사용자는 Markdown 리포트, 차트, CSV, Excel 결과를 확인한다.
+7. 사용자는 Markdown 리포트, 차트, CSV, Excel, JSONL 결과를 확인한다.
 
 ## 4. 기능 요구사항
 
@@ -65,6 +65,7 @@ py main.py analyze --compare
 py main.py report
 py main.py export --format csv
 py main.py export --format excel
+py main.py export --format jsonl
 py main.py export --format csv --status summarized
 ```
 
