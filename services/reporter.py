@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+import re
 
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
@@ -53,7 +54,8 @@ def source_summary(rows, maximum: int = 5):
 
 def comparison_cell(value, source: str, axis: str) -> str:
     def clean_label(text: str) -> str:
-        return text.replace(f"{source} 주요 키워드:", "", 1).replace(f"{source}:", "", 1).replace(f"{source}는 ", "", 1).replace(f"{source}의 ", "", 1).strip(" -")
+        prefix = rf"^{re.escape(source)}(?:\s+(?:주요\s*키워드|주요어|제목))?(?:은|는|의|이|가)?\s*:?\s*"
+        return re.sub(prefix, "", text.strip(" -"), count=1).strip(" -")
 
     if isinstance(value, dict):
         if source in value:
