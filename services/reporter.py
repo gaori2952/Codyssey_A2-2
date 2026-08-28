@@ -183,7 +183,19 @@ def create_report() -> None:
         sources = connection.execute("SELECT source, COUNT(*) count FROM clean_news GROUP BY source ORDER BY count DESC").fetchall()
         daily = connection.execute("SELECT published_at, COUNT(*) count FROM clean_news WHERE published_at <> '' GROUP BY published_at ORDER BY published_at").fetchall()
         analysis = connection.execute("SELECT * FROM analyses WHERE analysis_type = 'trend' OR analysis_type IS NULL ORDER BY id DESC LIMIT 1").fetchone()
-        comparison = connection.execute("SELECT a.*, i.issue_title FROM analyses a LEFT JOIN issues i ON i.id = a.issue_id WHERE a.analysis_type = 'comparison' ORDER BY a.id DESC LIMIT 1").fetchone()
+        comparison = connection.execute(
+            """SELECT a.*, i.issue_title
+            FROM analyses a
+            LEFT JOIN issues i ON i.id = a.issue_id
+            WHERE a.analysis_type = 'comparison'
+              AND EXISTS (
+                  SELECT 1 FROM clean_news c
+                  WHERE c.issue_id = a.issue_id
+                  GROUP BY c.issue_id
+                  HAVING COUNT(DISTINCT c.source) >= 2
+              )
+            ORDER BY a.id DESC LIMIT 1"""
+        ).fetchone()
         comparison_sources = []
         comparison_items = []
         if comparison:
